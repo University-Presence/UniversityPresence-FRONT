@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import EventItem from '../../components/eventItem';
+import EventItem from '@/app/components/eventItem';
+import Divider from '@/app/components/Divider';
+import styles from '../../styles/event.module.css';
+import { Urbanist } from 'next/font/google';
+
+const urbanist = Urbanist({ subsets: ['latin'] });
 
 const EventList: React.FC = () => {
     const [events, setEvents] = useState<any[]>([]);
@@ -38,20 +43,23 @@ const EventList: React.FC = () => {
     }
 
     return (
-        <div>
-            <h1>Lista de Eventos</h1>
-            {events.map((event) => (
-                <EventItem
-                    key={event.id}
-                    id={event.attributes.id}
-                    name={event.attributes.name}
-                    description={event.attributes.description}
-                    eventStart={event.attributes.event_start}
-                    eventEnd={event.attributes.event_end}
-                    location={event.attributes.location}
-                    onViewDetails={(id) => console.log(`View details for event ID: ${id}`)}
-                />
-            ))}
+        <div className={`${styles.container} ${urbanist.className}`}>
+            <h1 className={styles.title}>Eventos</h1>
+            <Divider />
+            <div className={styles.eventList}>
+                {events.map((event) => (
+                    <EventItem
+                        key={event.id}
+                        id={event.attributes.id}
+                        name={event.attributes.name}
+                        description={event.attributes.description}
+                        eventStart={event.attributes.event_start}
+                        eventEnd={event.attributes.event_end}
+                        location={event.attributes.location}
+                        onViewDetails={(id) => console.log(`View details for event ID: ${id}`)}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

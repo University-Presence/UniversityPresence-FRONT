@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Lexend_Exa } from 'next/font/google';
+import { Lexend_Exa, Urbanist } from 'next/font/google';
 import "./globals.css";
 
 const lexendExa = Lexend_Exa({
   subsets: ['latin'],
-  weight: ['100', '200', '300'],
+  weight: ['100', '200', '300', '400'],
+});
+
+const urbanist = Urbanist({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -19,7 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={lexendExa.className}>{children}</body>
+      <body className={`${lexendExa.className} ${urbanist.className}`}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,0 +1,33 @@
+.container {
+    background: linear-gradient(170deg, var(--primary), var(--secondary), var(--tertiary));
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.title {
+    margin-top: 20px;
+    font-size: 32px;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+.eventList {
+    margin: 0px;
+    padding: 0px 15px 15px 15px;
+    width: calc(100% - 30px);
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    background: transparent;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    scrollbar-width: none;
+}
+
+.eventList::-webkit-scrollbar {
+    display: none;
+}

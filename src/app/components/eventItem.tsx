@@ -13,18 +13,35 @@ interface EventItemProps {
 
 const EventItem: React.FC<EventItemProps> = ({ id, name, description, location, eventStart, eventEnd, onViewDetails }) => {
     return (
-        <div className={styles.card}>
-            <h2 className={styles.title}>{name}</h2>
-            <p className={styles.description}>{description}</p>
-            <p className={styles.location}><strong>Local:</strong> {location}</p>
-            <p className={styles.datetime}>
-                <strong>Data e Hora:</strong> {new Date(eventStart).toLocaleString()} - {new Date(eventEnd).toLocaleString()}
-            </p>
-            <button className={styles.button} onClick={() => onViewDetails(id)}>
-                Ver Detalhes
-            </button>
-        </div>
+        <>
+            <div className={styles.card}>
+                    <div className={styles.banner}/>
+                <p className={styles.datetime}>
+                    {new Date(eventStart).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                    })}, {new Date(eventStart).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    })}
+                </p>
+                <img src="/logo.svg" alt="Logo" className={styles.logo} />
+                <div className={styles.locationContainer}>
+                    <img src="/map-pin.svg" alt="Location Icon" className={styles.locationIcon} />
+                    <p className={styles.location}>{location}</p>
+                </div>
+            </div>
+            <div className={styles.info}>
+                <h2 className={styles.title}>{name}</h2>
+                <p className={styles.description}>{description}</p>
+                <button className={styles.button} onClick={() => onViewDetails(id)}>
+                    Ver Detalhes
+                </button>
+            </div>
+        </>
     );
 };
+
 
 export default EventItem;
