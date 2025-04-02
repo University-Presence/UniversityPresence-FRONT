@@ -1,0 +1,59 @@
+"use client"
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import EventItem from '../../components/eventItem';
+
+const EventList: React.FC = () => {
+    const [events, setEvents] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await axios.get('http://localhost:3000/admin/events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setEvents(response.data.data);
+            } catch (err) {
+                setError('Erro ao carregar eventos.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
+    if (loading) {
+        return <p>Carregando...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    return (
+        <div>
+            <h1>Lista de Eventos</h1>
+            {events.map((event) => (
+                <EventItem
+                    key={event.id}
+                    id={event.attributes.id}
+                    name={event.attributes.name}
+                    description={event.attributes.description}
+                    eventStart={event.attributes.event_start}
+                    eventEnd={event.attributes.event_end}
+                    location={event.attributes.location}
+                    onViewDetails={(id) => console.log(`View details for event ID: ${id}`)}
+                />
+            ))}
+        </div>
+    );
+};
+
+export default EventList;

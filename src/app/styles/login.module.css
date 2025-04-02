@@ -9,17 +9,25 @@
 }
 
 .title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
+    padding-top: 20px;
+    font-size: 18;
+    font-weight: 300;
+    color: #ffffff;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .logo img {
     width: 200px;
     height: 200px;
-    display: flex;
+    display: block;
     margin: 0 auto;
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding-bottom: 20px;
 }
 
 .form {
@@ -27,28 +35,27 @@
     max-width: 400px;
     background: linear-gradient(170deg, var(--primary), var(--primary), var(--secondary), var(--tertiary));
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 24px 24px 0 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 0;
 }
 
 .inputGroup {
     margin-bottom: 15px;
 }
 
-.inputGroup label {
-    display: block;
-    font-size: 0.9rem;
-    color: #ffffff;
-    margin-bottom: 5px;
+.inputGroup ::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .inputGroup input {
     width: 100%;
+    margin-top: 30px;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #cccccc;
-    background-color: rgba(255, 255, 255, 0.5);
-
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(217, 96, 96, 0.552);
     border-radius: 4px;
     outline: none;
     transition: border-color 0.3s;
@@ -60,6 +67,8 @@
 
 .button {
     width: 100%;
+    margin-top: 30px;
+    margin-bottom: 60px;
     padding: 10px;
     font-size: 1rem;
     color: var(--primary);
