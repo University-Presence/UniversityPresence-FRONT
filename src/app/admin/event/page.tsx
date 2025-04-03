@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import EventItem from '@/app/components/eventItem';
 import Divider from '@/app/components/Divider';
+import EventAdd from '@/app/components/eventAdd';
 import styles from '../../styles/event.module.css';
 import { Urbanist } from 'next/font/google';
 
@@ -60,6 +61,7 @@ const EventList: React.FC = () => {
                     />
                 ))}
             </div>
+            <EventAdd />
         </div>
     );
 };
