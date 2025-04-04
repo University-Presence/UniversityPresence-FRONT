@@ -4,12 +4,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import EventItem from '@/app/components/eventItem';
 import Divider from '@/app/components/Divider';
+import EventAdd from '@/app/components/eventAdd';
 import styles from '../../styles/event.module.css';
 import { Urbanist } from 'next/font/google';
+import { useRouter } from 'next/navigation';
 
 const urbanist = Urbanist({ subsets: ['latin'] });
 
 const EventList: React.FC = () => {
+    const router = useRouter();
     const [events, setEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -56,10 +59,11 @@ const EventList: React.FC = () => {
                         eventStart={event.attributes.event_start}
                         eventEnd={event.attributes.event_end}
                         location={event.attributes.location}
-                        onViewDetails={(id) => console.log(`View details for event ID: ${id}`)}
+                        onViewDetails={(id) => router.push(`/admin/event/${id}`)}
                     />
                 ))}
             </div>
+            <EventAdd />
         </div>
     );
 };
