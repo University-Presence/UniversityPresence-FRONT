@@ -23,38 +23,52 @@ const CreateEventPage: React.FC = () => {
             const token = localStorage.getItem('authToken');
             try {
                 const response = await fetch('http://localhost:3000/admin/courses', {
-                    headers: { Authorization: `Bearer ${token}` },
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
                 if (response.ok) {
                     const data = await response.json();
                     setCourses(data.data);
+                } else {
+                    console.error('Erro ao buscar cursos.');
                 }
             } catch (error) {
-                console.error('Erro ao buscar cursos:', error);
+                console.error('Erro:', error);
             }
         };
         fetchCourses();
     }, []);
 
     const handleCourseChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const courseId = e.target.value;
-        setFormData({ ...formData, course_id: courseId });
+        const selectedCourseId = e.target.value;
+        setFormData({ ...formData, course_id: selectedCourseId });
 
         const token = localStorage.getItem('authToken');
         try {
-            const response = await fetch(`http://localhost:3000/admin/courses/${courseId}/class_rooms`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await fetch(`http://localhost:3000/admin/courses/${selectedCourseId}/class_rooms`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             if (response.ok) {
                 const data = await response.json();
                 setClassRooms(data.data);
+            } else {
+                console.error('Erro ao buscar turmas.');
             }
         } catch (error) {
-            console.error('Erro ao buscar turmas:', error);
+            console.error('Erro:', error);
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleClassRoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFormData({ ...formData, class_room_ids: e.target.value });
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
@@ -62,18 +76,26 @@ const CreateEventPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('authToken');
+
+        const formatToGMT3 = (date: string) => {
+            if (!date) return '';
+            return `${date}:00-03:00`;
+        };
+
         const payload = {
             data: {
                 type: 'event',
                 attributes: {
                     ...formData,
+                    event_start: formatToGMT3(formData.event_start),
+                    event_end: formatToGMT3(formData.event_end),
                     class_room_ids: formData.class_room_ids.split(',').map(id => id.trim()),
                 },
             },
         };
 
         try {
-            const response = await fetch('http://localhost:3000/admin/event', {
+            const response = await fetch('http://localhost:3000/admin/events', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,112 +110,97 @@ const CreateEventPage: React.FC = () => {
                 alert('Erro ao criar evento.');
             }
         } catch (error) {
-            console.error('Erro ao criar evento:', error);
+            console.error('Erro:', error);
+            alert('Erro ao criar evento.');
         }
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.pageContainer}>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <h2 className={styles.title}>Criar Evento</h2>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="name">Nome:</label>
-                    <input
-                        id="name"
-                        type="text"
-                        name="name"
-                        placeholder="Nome do evento"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="description">Descrição:</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        placeholder="Descrição"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="event_start">Data e hora inicial:</label>
-                    <input
-                        id="event_start"
-                        type="datetime-local"
-                        name="event_start"
-                        value={formData.event_start}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="event_end">Data e hora final:</label>
-                    <input
-                        id="event_end"
-                        type="datetime-local"
-                        name="event_end"
-                        value={formData.event_end}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="location">Local:</label>
-                    <input
-                        id="location"
-                        type="text"
-                        name="location"
-                        placeholder="Localização"
-                        value={formData.location}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="course_id">Curso:</label>
-                    <select
-                        id="course_id"
-                        name="course_id"
-                        value={formData.course_id}
-                        onChange={handleCourseChange}
-                        required
-                    >
-                        <option value="">Selecione um curso</option>
-                        {courses.map(course => (
-                            <option key={course.id} value={course.id}>
-                                {course.attributes.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="class_room_ids">Turmas:</label>
-                    <select
-                        id="class_room_ids"
-                        name="class_room_ids"
-                        value={formData.class_room_ids}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Selecione uma turma</option>
-                        {classRooms.map(classRoom => (
-                            <option key={classRoom.id} value={classRoom.id}>
-                                {classRoom.attributes.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <p className={styles.namefield}>Nome:</p>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Nome do evento"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <p className={styles.namefield}>Descrição:</p>
+                <textarea
+                    name="description"
+                    placeholder="Descrição"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className={styles.textarea}
+                    required
+                />
+                <p className={styles.namefield}>Data e hora inicial:</p>
+                <input
+                    type="datetime-local"
+                    name="event_start"
+                    value={formData.event_start}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <p className={styles.namefield}>Data e hora final:</p>
+                <input
+                    type="datetime-local"
+                    name="event_end"
+                    value={formData.event_end}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <p className={styles.namefield}>Local:</p>
+                <input
+                    type="text"
+                    name="location"
+                    placeholder="Localização"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <p className={styles.namefield}>Curso:</p>
+                <select
+                    name="course_id"
+                    value={formData.course_id}
+                    onChange={handleCourseChange}
+                    className={styles.select}
+                    required
+                >
+                    <option value="">Selecione um curso</option>
+                    {courses.map(course => (
+                        <option key={course.id} value={course.id}>
+                            {course.attributes.name}
+                        </option>
+                    ))}
+                </select>
+                <p className={styles.namefield}>Turmas:</p>
+                <select
+                    name="class_room_ids"
+                    value={formData.class_room_ids}
+                    onChange={handleClassRoomChange}
+                    className={styles.select}
+                    required
+                >
+                    <option value="">Selecione uma turma</option>
+                    {classRooms.map(classRoom => (
+                        <option key={classRoom.id} value={classRoom.id}>
+                            {classRoom.attributes.name}
+                        </option>
+                    ))}
+                </select>
                 <div className={styles.buttonContainer}>
-                    <button type="button" className={styles.cancelButton} onClick={() => router.push('/admin/event')}>
+                    <button type="button" className={styles.closeButton} onClick={() => router.push('/admin/event')}>
                         Cancelar
                     </button>
-                    <button type="submit" className={styles.submitButton}>
-                        Criar Evento
-                    </button>
+                    <button type="submit" className={styles.submitButton}>Criar Evento</button>
                 </div>
             </form>
         </div>
